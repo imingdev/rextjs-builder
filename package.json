@@ -1,0 +1,56 @@
+{
+  "name": "@rextjs/builder",
+  "version": "1.0.0",
+  "author": "mingdev <mingdev@163.com>",
+  "main": "./dist/Builder.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production rollup --config rollup.config.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.14.2",
+    "@rextjs/babel-plugin-auto-css-modules": "^1.0.0",
+    "@rextjs/client-page": "^1.0.2",
+    "@rextjs/client-page-loader": "^1.0.0",
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "consola": "^2.15.3",
+    "css-loader": "^5.2.6",
+    "events": "^3.3.0",
+    "eventsource-polyfill": "^0.9.6",
+    "file-loader": "^6.2.0",
+    "lodash": "^4.17.21",
+    "memory-fs": "^0.5.0",
+    "mini-css-extract-plugin": "^1.6.0",
+    "optimize-css-assets-webpack-plugin": "^6.0.0",
+    "pify": "^5.0.0",
+    "postcss-loader": "^4.3.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^4.46.0",
+    "webpack-dev-middleware": "^4.3.0",
+    "webpack-dynamic-entry-plugin": "^1.0.4",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-manifest-plugin": "^3.1.1",
+    "webpack-node-externals": "^3.0.0",
+    "webpackbar": "^5.0.0-3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.6.0",
+    "rollup": "^2.48.0",
+    "rollup-plugin-babel": "^4.4.0"
+  },
+  "files": [
+    "dist",
+    "App.js",
+    "Document.js",
+    "Error.js"
+  ],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
