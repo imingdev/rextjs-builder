@@ -4,8 +4,8 @@ import webpack from 'webpack';
 import consola from 'consola';
 import cloneDeep from 'lodash/cloneDeep';
 import WebpackBarPlugin from 'webpackbar';
-import {assetsLoaders, styleLoaders} from '../utils/loaders';
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { assetsLoaders, styleLoaders } from '../utils/loaders';
 
 export default class WebpackBaseConfig {
   constructor(options) {
@@ -16,8 +16,8 @@ export default class WebpackBaseConfig {
   }
 
   get assetsPath() {
-    const {env, options: {dev, build: {dir, filenames}}} = this;
-    const {app, chunk, css, img, font, video, cssModulesName} = filenames || {};
+    const { env, options: { dev, build: { dir, filenames } } } = this;
+    const { app, chunk, css, img, font, video, cssModulesName } = filenames || {};
 
     const resolvePath = (_path) => path.posix.join(dev ? '.' : dir.static, _path);
 
@@ -32,13 +32,13 @@ export default class WebpackBaseConfig {
       return fileName;
     };
 
-    const loadCssModulesName = name => {
+    const loadCssModulesName = (name) => {
       let cssName;
       if (typeof name === 'string') cssName = name;
       if (typeof name === 'function') cssName = name(env);
 
-      return cssName
-    }
+      return cssName;
+    };
 
     return {
       // eslint-disable-next-line
@@ -49,7 +49,7 @@ export default class WebpackBaseConfig {
       img: loadFileNamePath(img) || (dev ? '[path][name].[ext]' : resolvePath('images/[contenthash:8].[ext]')),
       font: loadFileNamePath(font) || (dev ? '[path][name].[ext]' : resolvePath('fonts/[contenthash:8].[ext]')),
       video: loadFileNamePath(video) || (dev ? '[path][name].[ext]' : resolvePath('videos/[contenthash:8].[ext]')),
-      cssModulesName: loadCssModulesName(cssModulesName) || (dev ? '[name]__[local]--[hash:base64:5]' : '_[hash:base64:10]')
+      cssModulesName: loadCssModulesName(cssModulesName) || (dev ? '[name]__[local]--[hash:base64:5]' : '_[hash:base64:10]'),
     };
   }
 
@@ -58,15 +58,15 @@ export default class WebpackBaseConfig {
     return {
       _document: '@rextjs/client-page/Document',
       _app: '@rextjs/client-page/App',
-      _error: '@rextjs/client-page/Error'
+      _error: '@rextjs/client-page/Error',
     };
   }
 
   get color() {
-    const {name} = this;
+    const { name } = this;
     const colors = {
       client: 'green',
-      server: 'orange'
+      server: 'orange',
     };
 
     return colors[name];
@@ -80,7 +80,7 @@ export default class WebpackBaseConfig {
     return {
       isDev: this.dev,
       isServer: this.isServer,
-      isClient: this.isClient
+      isClient: this.isClient,
     };
   }
 
@@ -93,18 +93,18 @@ export default class WebpackBaseConfig {
   }
 
   get devtool() {
-    const {dev, isServer} = this;
+    const { dev, isServer } = this;
     if (!dev || isServer) return false;
 
     return 'source-map';
   }
 
   output() {
-    const {options} = this;
-    const {build, dir} = options;
+    const { options } = this;
+    const { build, dir } = options;
     return {
       path: path.join(dir.root, dir.build),
-      publicPath: build.publicPath
+      publicPath: build.publicPath,
     };
   }
 
@@ -112,7 +112,7 @@ export default class WebpackBaseConfig {
     const env = {
       'process.env.NODE_ENV': JSON.stringify(this.mode),
       'process.mode': JSON.stringify(this.mode),
-      'process.dev': this.dev
+      'process.dev': this.dev,
     };
 
     Object.entries(this.options.env).forEach(([key, value]) => {
@@ -125,63 +125,63 @@ export default class WebpackBaseConfig {
   }
 
   getBabelOptions() {
-    const {name: envName, env, options} = this;
-    const {babel} = options.build;
+    const { name: envName, env, options } = this;
+    const { babel } = options.build;
 
     const opt = {
       ...babel,
-      envName
+      envName,
     };
 
     if (opt.configFile || opt.babelrc) return opt;
 
     const defaultPlugins = ['@rextjs/babel-plugin-auto-css-modules'];
-    if (typeof opt.plugins === 'function') opt.plugins = opt.plugins({envName, ...env}, defaultPlugins);
+    if (typeof opt.plugins === 'function') opt.plugins = opt.plugins({ envName, ...env }, defaultPlugins);
     if (!opt.plugins) opt.plugins = defaultPlugins;
 
     const defaultPreset = ['react-app'];
 
-    if (typeof opt.presets === 'function') opt.presets = opt.presets({envName, ...env}, defaultPreset);
+    if (typeof opt.presets === 'function') opt.presets = opt.presets({ envName, ...env }, defaultPreset);
     if (!opt.presets) opt.presets = defaultPreset;
 
     return opt;
   }
 
   get rules() {
-    const {env, assetsPath, getBabelOptions} = this;
-    const babelOptions = getBabelOptions()
+    const { env, assetsPath, getBabelOptions } = this;
+    const babelOptions = getBabelOptions();
 
     return [{
       test: /\.(js|jsx)$/,
       loader: 'babel-loader',
-      options: babelOptions
+      options: babelOptions,
     }]
       .concat(styleLoaders({
         sourceMap: env.isDev,
-        assetsPath
+        assetsPath,
       }))
-      .concat(assetsLoaders({emitFile: env.isClient, assetsPath}));
+      .concat(assetsLoaders({ emitFile: env.isClient, assetsPath }));
   }
 
   plugins() {
-    const {name, color, nodeEnv, assetsPath} = this;
+    const { name, color, nodeEnv, assetsPath } = this;
     return [
       new MiniCssExtractPlugin({
         filename: assetsPath.css,
-        chunkFilename: assetsPath.css
+        chunkFilename: assetsPath.css,
       }),
       new WebpackDynamicEntryPlugin(),
       new WebpackBarPlugin({
         name,
-        color
+        color,
       }),
-      new webpack.DefinePlugin(nodeEnv())
+      new webpack.DefinePlugin(nodeEnv()),
     ];
   }
 
   extendConfig(config) {
-    const {options, env} = this;
-    const {extend} = options.build;
+    const { options, env } = this;
+    const { extend } = options.build;
     if (typeof extend === 'function') return extend(config, env) || config;
     return config;
   }
@@ -195,15 +195,15 @@ export default class WebpackBaseConfig {
       entry: this.entry(),
       output: this.output(),
       module: {
-        rules: this.rules
+        rules: this.rules,
       },
       resolve: {
         extensions: ['.js', '.jsx', '.json'],
-        alias: this.options.build.alias || {}
+        alias: this.options.build.alias || {},
       },
       plugins: this.plugins(),
       performance: {
-        hints: false
+        hints: false,
       },
       stats: {
         colors: true,
@@ -211,8 +211,8 @@ export default class WebpackBaseConfig {
         children: false,
         chunks: false,
         chunkModules: false,
-        entrypoints: false
-      }
+        entrypoints: false,
+      },
     };
 
     return cloneDeep(this.extendConfig(config));

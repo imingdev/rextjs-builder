@@ -1,12 +1,11 @@
 import path from 'path';
 import webpack from 'webpack';
 import WebpackDynamicEntryPlugin from 'webpack-dynamic-entry-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import OptimizeCSSPlugin from 'optimize-css-assets-webpack-plugin';
-import {WebpackManifestPlugin} from 'webpack-manifest-plugin';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 import WebpackBaseConfig from './base';
-import {findPageFile} from "../utils/common";
+import { findPageFile } from '../utils/common';
 
 export default class WebpackClientConfig extends WebpackBaseConfig {
   constructor(options) {
@@ -17,8 +16,8 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
   }
 
   entry() {
-    const {options, dev, loadDefaultPages} = this;
-    const {dir, pattern} = options;
+    const { options, dev, loadDefaultPages } = this;
+    const { dir, pattern } = options;
 
     return WebpackDynamicEntryPlugin.getEntry({
       pattern: [
@@ -37,22 +36,22 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
                 // https://github.com/webpack-contrib/webpack-hot-middleware/issues/53#issuecomment-162823945
                 'eventsource-polyfill',
                 // https://github.com/glenjamin/webpack-hot-middleware#config
-                'webpack-hot-middleware/client?path=/__rext__/hmr'
+                'webpack-hot-middleware/client?path=/__rext__/hmr',
               );
             }
-            return {[name]: entryVal};
+            return { [name]: entryVal };
           }));
-      }
+      },
     });
   }
 
   output() {
-    const {assetsPath} = this;
+    const { assetsPath } = this;
     const output = super.output();
     return {
       ...output,
       filename: assetsPath.app,
-      chunkFilename: assetsPath.chunk
+      chunkFilename: assetsPath.chunk,
     };
   }
 
@@ -62,15 +61,15 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
       {
         'process.browser': true,
         'process.client': true,
-        'process.server': false
-      }
+        'process.server': false,
+      },
     );
   }
 
   get rules() {
-    const {getBabelOptions, loadDefaultPages, options} = this;
-    const {dir, globals} = options;
-    const babelOptions = getBabelOptions()
+    const { getBabelOptions, loadDefaultPages, options } = this;
+    const { dir, globals } = options;
+    const babelOptions = getBabelOptions();
 
     const rules = super.rules;
 
@@ -78,22 +77,22 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
       resourceQuery: /rextClientPage/,
       use: [{
         loader: 'babel-loader',
-        options: babelOptions
+        options: babelOptions,
       }, {
         loader: '@rextjs/client-page-loader',
         options: {
           app: findPageFile(path.join(dir.root, dir.src, dir.page, '_app'), ['js', 'jsx'], loadDefaultPages._app),
           id: globals.id,
-          context: globals.context
-        }
-      }]
+          context: globals.context,
+        },
+      }],
     }]);
   }
 
   plugins() {
-    const {dev, options, assetsPath} = this;
-    const {build, dir} = options;
-    const {publicPath} = build;
+    const { dev, options } = this;
+    const { build, dir } = options;
+    const { publicPath } = build;
 
     const plugins = super.plugins();
     plugins.push(
@@ -115,11 +114,11 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
               [name]: {
                 view,
                 scripts,
-                styles
-              }
+                styles,
+              },
             };
-          }))
-      })
+          })),
+      }),
     );
 
     if (dev) plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -128,7 +127,7 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
   }
 
   optimization() {
-    const {options, dev} = this;
+    const { options, dev } = this;
     if (dev) return {};
 
     return {
@@ -137,34 +136,34 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
           vendor: {
             name: 'vendor',
             chunks: 'initial',
-            test: ({resource}) => resource && /\.js$/.test(resource) && resource.indexOf(path.join(options.dir.root, 'node_modules')) === 0
+            test: ({ resource }) => resource && /\.js$/.test(resource) && resource.indexOf(path.join(options.dir.root, 'node_modules')) === 0,
           },
           async: {
             name: 'async',
             chunks: 'async',
-            minChunks: 3
-          }
-        }
+            minChunks: 3,
+          },
+        },
       },
       runtimeChunk: true,
       minimizer: [
         new OptimizeCSSPlugin({
-          cssProcessorOptions: {safe: true}
+          cssProcessorOptions: { safe: true },
         }),
         new UglifyJsPlugin({
           uglifyOptions: {
             output: {
-              comments: false
+              comments: false,
             },
             compress: {
               drop_debugger: true,
-              drop_console: true
-            }
+              drop_console: true,
+            },
           },
           sourceMap: false,
-          parallel: true
-        })
-      ]
+          parallel: true,
+        }),
+      ],
     };
   }
 
@@ -172,7 +171,7 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
     const config = super.config();
     return {
       ...config,
-      optimization: this.optimization()
+      optimization: this.optimization(),
     };
   }
 }

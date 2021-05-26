@@ -12,13 +12,13 @@ export default class WebpackServerConfig extends WebpackBaseConfig {
   }
 
   entry() {
-    const {options, loadDefaultPages} = this;
-    const {build, dir, pattern} = options;
+    const { options, loadDefaultPages } = this;
+    const { build, dir, pattern } = options;
 
     return WebpackDynamicEntryPlugin.getEntry({
       pattern: [
         path.join(dir.root, dir.src, dir.page, pattern),
-        path.join(dir.root, dir.src, dir.page, '{_document,_app,_error}.{js,jsx}')
+        path.join(dir.root, dir.src, dir.page, '{_document,_app,_error}.{js,jsx}'),
       ],
       generate: (entry) => {
         if (!entry._document) entry._document = loadDefaultPages._document;
@@ -31,9 +31,9 @@ export default class WebpackServerConfig extends WebpackBaseConfig {
               .split('/')
               .filter(Boolean)
               .join('/');
-            return {[key]: entry[name]};
+            return { [key]: entry[name] };
           }));
-      }
+      },
     });
   }
 
@@ -43,7 +43,7 @@ export default class WebpackServerConfig extends WebpackBaseConfig {
       ...output,
       filename: '[name].js',
       chunkFilename: '[name].js',
-      libraryTarget: 'commonjs2'
+      libraryTarget: 'commonjs2',
     };
   }
 
@@ -53,8 +53,8 @@ export default class WebpackServerConfig extends WebpackBaseConfig {
       {
         'process.browser': false,
         'process.client': false,
-        'process.server': true
-      }
+        'process.server': true,
+      },
     );
   }
 
@@ -62,7 +62,7 @@ export default class WebpackServerConfig extends WebpackBaseConfig {
     const config = super.config();
     return {
       ...config,
-      externals: WebpackNodeExternals()
+      externals: WebpackNodeExternals(),
     };
   }
 }

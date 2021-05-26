@@ -20,30 +20,31 @@ export default class Builder {
   }
 
   on(name, cb) {
-    return events.on(name, cb)
+    return events.on(name, cb);
   }
 
   emit(name, ...args) {
-    return events.emit(name, ...args)
+    return events.emit(name, ...args);
   }
 
   async build() {
-    const {client, server} = this.webpackConfig;
+    const { client, server } = this.webpackConfig;
 
     await Promise.all([client, server].map((c) => this.webpackCompile(webpack(c))));
   }
 
   async webpackCompile(compiler) {
-    const {options, mfs, emit} = this;
-    const {name} = compiler.options;
+    const { options, mfs, emit } = this;
+    const { name } = compiler.options;
 
     // compile done
-    compiler.hooks.done.tap('rext-done', (stats) => emit('done', {name, compiler, stats}));
+    compiler.hooks.done.tap('rext-done', (stats) => emit('done', { name, compiler, stats }));
 
     if (options.dev) {
       // Client Build, watch is started by dev-middleware
       if (name === 'client') {
         // In dev, write files in memory FS
+        // eslint-disable-next-line no-param-reassign
         compiler.outputFileSystem = mfs;
 
         return new Promise((resolve) => {
@@ -75,20 +76,20 @@ export default class Builder {
   }
 
   webpackDev(compiler) {
-    const {middleware, emit} = this;
+    const { middleware, emit } = this;
     // Create webpack dev middleware
     this.devMiddleware = pify(
       webpackDevMiddleware(compiler, {
-        stats: false
-      })
+        stats: false,
+      }),
     );
     // Create webpack hot middleware
     this.hotMiddleware = pify(
       webpackHotMiddleware(compiler, {
         log: false,
         heartbeat: 10000,
-        path: '/__rext__/hmr'
-      })
+        path: '/__rext__/hmr',
+      }),
     );
 
     // Register devMiddleware
@@ -97,7 +98,7 @@ export default class Builder {
 
   // dev middle
   async middleware(req, res, next) {
-    const {devMiddleware, hotMiddleware} = this;
+    const { devMiddleware, hotMiddleware } = this;
     if (devMiddleware) await devMiddleware(req, res);
 
     if (hotMiddleware) await hotMiddleware(req, res);

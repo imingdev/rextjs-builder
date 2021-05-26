@@ -6,17 +6,17 @@ export const cssLoaders = (options = {}) => {
     options: {
       modules: {
         auto: options.useCssModules ? undefined : /\.module\.\w+$/i,
-        localIdentName: options.assetsPath?.cssModulesName
+        localIdentName: options.assetsPath?.cssModulesName,
       },
-      sourceMap: options.sourceMap
-    }
+      sourceMap: options.sourceMap,
+    },
   };
 
   const postcssLoader = {
     loader: 'postcss-loader',
     options: {
-      sourceMap: options.sourceMap
-    }
+      sourceMap: options.sourceMap,
+    },
   };
 
   // generate loader string to be used with extract text plugin
@@ -28,8 +28,8 @@ export const cssLoaders = (options = {}) => {
         loader: `${loader}-loader`,
         options: {
           ...loaderOptions,
-          sourceMap: options.sourceMap
-        }
+          sourceMap: options.sourceMap,
+        },
       });
     }
     return [MiniCssExtractPlugin.loader].concat(loaders);
@@ -42,7 +42,7 @@ export const cssLoaders = (options = {}) => {
     sass: generateLoaders('sass', { indentedSyntax: true }),
     scss: generateLoaders('sass'),
     stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus')
+    styl: generateLoaders('stylus'),
   };
 };
 
@@ -55,11 +55,11 @@ export const styleLoaders = (options = {}) => {
     output.push({
       oneOf: [{
         resourceQuery: /modules/,
-        use: cssModulesLoaders[extension]
+        use: cssModulesLoaders[extension],
       }, {
         test: new RegExp(`\\.${extension}$`),
-        use: normalLoaders[extension]
-      }]
+        use: normalLoaders[extension],
+      }],
     });
   }
 
@@ -76,23 +76,23 @@ export const assetsLoaders = ({ emitFile = true, assetsPath } = {}) => {
     options: {
       limit,
       emitFile,
-      name: assetsPath.img
-    }
+      name: assetsPath.img,
+    },
   }, {
     test: /\.(webm|mp4|ogv)$/i,
     loader,
     options: {
       limit,
       emitFile,
-      name: assetsPath.video
-    }
+      name: assetsPath.video,
+    },
   }, {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
     loader,
     options: {
       limit,
       emitFile,
-      name: assetsPath.font
-    }
+      name: assetsPath.font,
+    },
   }];
 };
