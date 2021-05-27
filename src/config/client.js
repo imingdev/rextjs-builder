@@ -99,25 +99,19 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
       new WebpackManifestPlugin({
         publicPath,
         fileName: path.join(dir.root, dir.build, build.dir.manifest),
-        generate: (seed, files, entryPoints) => Object.assign.apply(Object, Object.keys(entryPoints)
-          .sort((a, b) => a.indexOf('_error') - b.indexOf('_error'))
-          .map((name) => {
-            const fileList = entryPoints[name].map((file) => `${publicPath}${file}`);
+        generate: (seed, files, entryPoints) => Object.assign
+          .apply(Object, Object.keys(entryPoints)
+            .sort((a, b) => a.lastIndexOf('index') - b.indexOf('index'))
+            .sort((a, b) => a.lastIndexOf('_error') - b.indexOf('_error'))
+            .map((name) => {
+              const fileList = entryPoints[name]
+                .map((file) => `${publicPath}${file}`)
+                .filter((row) => /\.(js|css)$/.test(row));
 
-            const scripts = fileList.filter((row) => /\.js$/.test(row))
-              .filter((row) => !/hot-update.js$/.test(row));
-
-            const styles = fileList.filter((row) => /\.css$/.test(row));
-            const view = `${build.dir.server}/${name}.js`;
-
-            return {
-              [name]: {
-                view,
-                scripts,
-                styles,
-              },
-            };
-          })),
+              return {
+                [name]: fileList,
+              };
+            })),
       }),
     );
 
