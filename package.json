@@ -1,6 +1,6 @@
 {
   "name": "@rextjs/builder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "mingdev <mingdev@163.com>",
   "main": "./dist/Builder.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-react": "^7.13.13",
     "@rextjs/babel-plugin-auto-css-modules": "^1.0.0",
-    "@rextjs/client-page": "^1.0.2",
-    "@rextjs/client-page-loader": "^1.0.1",
+    "@rextjs/client-page": "^1.0.3",
+    "@rextjs/client-page-loader": "^1.0.2",
     "babel-loader": "^8.2.2",
     "consola": "^2.15.3",
     "css-loader": "^5.2.6",
