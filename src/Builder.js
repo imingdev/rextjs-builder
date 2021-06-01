@@ -34,7 +34,7 @@ export default class Builder {
   }
 
   async webpackCompile(compiler) {
-    const { options, mfs, emit } = this;
+    const { options, emit } = this;
     const { name } = compiler.options;
 
     // compile done
@@ -43,10 +43,6 @@ export default class Builder {
     if (options.dev) {
       // Client Build, watch is started by dev-middleware
       if (name === 'client') {
-        // In dev, write files in memory FS
-        // eslint-disable-next-line no-param-reassign
-        compiler.outputFileSystem = mfs;
-
         return new Promise((resolve) => {
           compiler.hooks.done.tap('rext-dev', () => resolve());
           return this.webpackDev(compiler);
@@ -76,11 +72,12 @@ export default class Builder {
   }
 
   webpackDev(compiler) {
-    const { middleware, emit } = this;
+    const { middleware, emit, mfs } = this;
     // Create webpack dev middleware
     this.devMiddleware = pify(
       webpackDevMiddleware(compiler, {
         stats: false,
+        outputFileSystem: mfs,
       }),
     );
     // Create webpack hot middleware

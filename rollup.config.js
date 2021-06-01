@@ -1,6 +1,5 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import babel from 'rollup-plugin-babel';
 import eslint from '@rollup/plugin-eslint';
 import { dependencies } from './package.json';
 
@@ -16,8 +15,6 @@ export default {
     resolve(),
     // 支持 commonjs 格式
     commonjs(),
-    // babel
-    babel({ runtimeHelpers: true }),
     // eslint
     eslint('.eslintrc.js'),
   ],

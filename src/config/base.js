@@ -135,11 +135,19 @@ export default class WebpackBaseConfig {
 
     if (opt.configFile || opt.babelrc) return opt;
 
-    const defaultPlugins = ['@rextjs/babel-plugin-auto-css-modules'];
+    const defaultPlugins = [
+      '@babel/plugin-transform-runtime',
+      '@babel/plugin-syntax-dynamic-import',
+      '@babel/plugin-proposal-class-properties',
+      '@rextjs/babel-plugin-auto-css-modules',
+    ];
     if (typeof opt.plugins === 'function') opt.plugins = opt.plugins({ envName, ...env }, defaultPlugins);
     if (!opt.plugins) opt.plugins = defaultPlugins;
 
-    const defaultPreset = ['react-app'];
+    const defaultPreset = [
+      ['@babel/preset-env', { modules: false }],
+      '@babel/preset-react',
+    ];
 
     if (typeof opt.presets === 'function') opt.presets = opt.presets({ envName, ...env }, defaultPreset);
     if (!opt.presets) opt.presets = defaultPreset;
@@ -148,12 +156,15 @@ export default class WebpackBaseConfig {
   }
 
   get rules() {
-    const { env, assetsPath, getBabelOptions } = this;
+    const { env, assetsPath, getBabelOptions, options } = this;
     const babelOptions = getBabelOptions();
 
     return [{
       test: /\.(js|jsx)$/,
       loader: 'babel-loader',
+      include: [
+        path.join(options.dir.root, options.dir.src),
+      ],
       options: babelOptions,
     }]
       .concat(styleLoaders({
