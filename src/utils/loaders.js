@@ -52,12 +52,14 @@ export const styleLoaders = (options = {}) => {
   const cssModulesLoaders = cssLoaders({ ...options || {}, useCssModules: true });
 
   for (const extension in normalLoaders) {
+    const test = new RegExp(`\\.${extension}$`);
     output.push({
       oneOf: [{
+        test,
         resourceQuery: /modules/,
         use: cssModulesLoaders[extension],
       }, {
-        test: new RegExp(`\\.${extension}$`),
+        test,
         use: normalLoaders[extension],
       }],
     });

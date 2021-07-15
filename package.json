@@ -1,6 +1,6 @@
 {
   "name": "@rextjs/builder",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "author": "mingdev <mingdev@163.com>",
   "main": "./dist/Builder.js",
   "scripts": {
