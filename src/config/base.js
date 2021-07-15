@@ -140,6 +140,7 @@ export default class WebpackBaseConfig {
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-proposal-class-properties',
       '@rextjs/babel-plugin-auto-css-modules',
+      'react-hot-loader/babel',
     ];
     if (typeof opt.plugins === 'function') opt.plugins = opt.plugins({ envName, ...env }, defaultPlugins);
     if (!opt.plugins) opt.plugins = defaultPlugins;
@@ -198,6 +199,9 @@ export default class WebpackBaseConfig {
   }
 
   config() {
+    const alias = this.options.build.alias || {};
+    if (this.options.dev) alias['react-dom'] = '@hot-loader/react-dom';
+
     const config = {
       name: this.name,
       target: this.target,
@@ -210,7 +214,7 @@ export default class WebpackBaseConfig {
       },
       resolve: {
         extensions: ['.js', '.jsx', '.json'],
-        alias: this.options.build.alias || {},
+        alias,
       },
       plugins: this.plugins(),
       performance: {

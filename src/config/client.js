@@ -131,6 +131,7 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
             name: 'vendor',
             chunks: 'initial',
             test: ({ resource }) => resource && /\.js$/.test(resource) && resource.indexOf(path.join(options.dir.root, 'node_modules')) === 0,
+            priority: -10,
           },
           async: {
             name: 'async',
