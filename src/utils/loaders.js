@@ -51,6 +51,7 @@ export const styleLoaders = (options = {}) => {
   const normalLoaders = cssLoaders(options);
   const cssModulesLoaders = cssLoaders({ ...options || {}, useCssModules: true });
 
+  // eslint-disable-next-line guard-for-in,no-restricted-syntax
   for (const extension in normalLoaders) {
     const test = new RegExp(`\\.${extension}$`);
     output.push({

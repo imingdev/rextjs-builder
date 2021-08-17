@@ -139,8 +139,8 @@ export default class WebpackBaseConfig {
       '@babel/plugin-transform-runtime',
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-throw-expressions',
       '@rextjs/babel-plugin-auto-css-modules',
-      'react-hot-loader/babel',
     ];
     if (typeof opt.plugins === 'function') opt.plugins = opt.plugins({ envName, ...env }, defaultPlugins);
     if (!opt.plugins) opt.plugins = defaultPlugins;
@@ -156,8 +156,19 @@ export default class WebpackBaseConfig {
     return opt;
   }
 
+  createLintingRule() {
+    return {
+      test: /\.(jsx?)$/,
+      loader: 'eslint-loader',
+      enforce: 'pre',
+      options: {
+        formatter: require('eslint-friendly-formatter'),
+      },
+    };
+  }
+
   get rules() {
-    const { env, assetsPath, getBabelOptions, options } = this;
+    const { env, assetsPath, getBabelOptions, createLintingRule, options } = this;
     const babelOptions = getBabelOptions();
 
     return [{
@@ -165,14 +176,16 @@ export default class WebpackBaseConfig {
       loader: 'babel-loader',
       include: [
         path.join(options.dir.root, options.dir.src),
+        path.join(options.dir.root, 'node_modules/webpack-hot-middleware/client'),
       ],
       options: babelOptions,
-    }]
+    }, options.build.useEslint && createLintingRule()]
       .concat(styleLoaders({
         sourceMap: env.isDev,
         assetsPath,
       }))
-      .concat(assetsLoaders({ emitFile: env.isClient, assetsPath }));
+      .concat(assetsLoaders({ emitFile: env.isClient, assetsPath }))
+      .filter(Boolean);
   }
 
   plugins() {

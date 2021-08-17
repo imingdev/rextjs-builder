@@ -5,7 +5,6 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import fs from 'fs';
 import MFS from 'memory-fs';
 import getWebpackConfig from './config';
-import events from './utils/events';
 
 export default class Builder {
   constructor(options) {
@@ -19,14 +18,6 @@ export default class Builder {
     this.middleware = this.middleware.bind(this);
   }
 
-  on(name, cb) {
-    return events.on(name, cb);
-  }
-
-  emit(name, ...args) {
-    return events.emit(name, ...args);
-  }
-
   async build() {
     const { client, server } = this.webpackConfig;
 
@@ -36,9 +27,6 @@ export default class Builder {
   async webpackCompile(compiler) {
     const { options, emit } = this;
     const { name } = compiler.options;
-
-    // compile done
-    compiler.hooks.done.tap('rext-done', (stats) => emit('done', { name, compiler, stats }));
 
     if (options.dev) {
       // Client Build, watch is started by dev-middleware
@@ -72,7 +60,7 @@ export default class Builder {
   }
 
   webpackDev(compiler) {
-    const { middleware, emit, mfs } = this;
+    const { mfs } = this;
     // Create webpack dev middleware
     this.devMiddleware = pify(
       webpackDevMiddleware(compiler, {
@@ -88,9 +76,6 @@ export default class Builder {
         path: '/__rext__/hmr',
       }),
     );
-
-    // Register devMiddleware
-    emit('middleware', middleware);
   }
 
   // dev middle

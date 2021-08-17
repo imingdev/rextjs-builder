@@ -67,23 +67,23 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
   }
 
   get rules() {
-    const { getBabelOptions, loadDefaultPages, options } = this;
-    const { dir, globals } = options;
-    const babelOptions = getBabelOptions();
+    const { loadDefaultPages, options } = this;
+    const { dir, globals, dev } = options;
 
     const rules = super.rules;
 
     return rules.concat([{
+      test: /\.(js|jsx)$/,
       resourceQuery: /rextClientPage/,
       use: [{
         loader: 'babel-loader',
-        options: babelOptions,
       }, {
         loader: '@rextjs/client-page-loader',
         options: {
           app: findPageFile(path.join(dir.root, dir.src, dir.page, '_app'), ['js', 'jsx'], loadDefaultPages._app),
           id: globals.id,
           context: globals.context,
+          useHot: dev,
         },
       }],
     }]);
