@@ -88,3 +88,5 @@ export default class Builder {
     next();
   }
 }
+
+Builder.getWebpackConfig = getWebpackConfig;
