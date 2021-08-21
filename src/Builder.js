@@ -25,7 +25,7 @@ export default class Builder {
   }
 
   async webpackCompile(compiler) {
-    const { options, emit } = this;
+    const { options } = this;
     const { name } = compiler.options;
 
     if (options.dev) {
@@ -60,7 +60,7 @@ export default class Builder {
   }
 
   webpackDev(compiler) {
-    const { mfs } = this;
+    const { mfs, options } = this;
     // Create webpack dev middleware
     this.devMiddleware = pify(
       webpackDevMiddleware(compiler, {
@@ -73,7 +73,7 @@ export default class Builder {
       webpackHotMiddleware(compiler, {
         log: false,
         heartbeat: 10000,
-        path: '/__rext__/hmr',
+        path: `${options.build.publicPath}__rext__/hmr`,
       }),
     );
   }

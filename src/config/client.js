@@ -36,7 +36,7 @@ export default class WebpackClientConfig extends WebpackBaseConfig {
                 // https://github.com/webpack-contrib/webpack-hot-middleware/issues/53#issuecomment-162823945
                 'eventsource-polyfill',
                 // https://github.com/glenjamin/webpack-hot-middleware#config
-                'webpack-hot-middleware/client?path=/__rext__/hmr',
+                `webpack-hot-middleware/client?path=${options.build.publicPath}__rext__/hmr`,
               );
             }
             return { [name]: entryVal };
